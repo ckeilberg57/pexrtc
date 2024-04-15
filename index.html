@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-us" xml:lang="en-us">
+<head>
+    <title>Pexip RTC</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="robots" content="NONE,NOARCHIVE" />
+    <style>
+        /* Styles to align the containers side by side */
+        #container, #new_container {
+            width: 48%; /* Adjust width as needed */
+            vertical-align: top;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="home">
+    <!-- Main Site Container -->
+    <div id="site_container">
+        <!-- Existing Container -->
+        <div id="container">
+            <!-- Header -->
+            <header id="header" class="branding" role="banner"></header>
+            <!-- Main Content -->
+            <div id="maincontent" class="main site join">
+                <form id="id_form" action="conference.html" method="get">
+                    <label for="id_alias" class="vh">Enter the conference alias</label>
+                    <input type="text" value="" name="alias" id="id_alias" placeholder="Enter the conference alias" required class="webrtcinput">
+                    <button type="button" id="generateID" class="generate-button">Generate Random ID</button>
+                    <label for="id_Guestname" class="vh">Enter guest name</label>
+                    <input type="text" value="" name="Guestname" id="id_Guestname" placeholder="Guest Name" class="webrtcinput">
+                    <br>
+                    <label for="id_name" class="vh">Enter your name</label>
+                    <input type="text" value="" name="name" id="id_name" placeholder="Provider Name" required class="webrtcinput">
+                    <br>
+                    <button type="button" id="changeProviderBtn" class="generate-button" style="display:none;">Change Provider</button>
+                    <br>
+                    <!-- Dropdown list for providers -->
+                    <label for="provider_select" class="vh">Select Provider</label>
+                    <select id="provider_select" class="webrtcinput">
+                        <option value="">Select Provider</option>
+                        <option value="C. Demo">Provider CDemo</option>
+                        <option value="J. Demo 2">Provider JDemo</option>
+                        <option value="M. Demo">Provider MDemo</option>
+                    </select>
+                    <input type="submit" value="Start a Session" name="create_vmr" id="create_vmr" class="webrtcbutton">
+                </form>
+            </div>
+            <!-- END Main Content -->
+        </div>
+        <!-- Footer -->
+        <div id="footer"></div>
+    </div>
+    <!-- END Site Container -->
+
+    <!-- JavaScript -->
+    <script type="text/javascript">
+        window.onload = function() {
+            // Function to generate a random numeric value of given length
+            function generateRandomNumeric(length) {
+                let result = '';
+                const characters = '0123456789';
+                const charactersLength = characters.length;
+                for (let i = 0; i < length; i++) {
+                    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                }
+                return result;
+            }
+
+            // Function to generate a random ID
+            function generateRandomID() {
+                const apptmd = "apptmd"; // Assuming this is the prefix you want
+                const randomNumeric = generateRandomNumeric(10);
+                return apptmd + randomNumeric;
+            }
+
+            // Event listener for the "Generate Random ID" button
+            document.getElementById("generateID").addEventListener("click", function() {
+                const randomID = generateRandomID();
+                document.getElementById("id_alias").value = randomID;
+            });
+
+            // Event listener for dropdown change
+            document.getElementById("provider_select").addEventListener("change", function() {
+                const selectedProvider = this.value;
+                document.getElementById("id_name").value = selectedProvider;
+                document.getElementById("provider_select").style.display = "none";
+                document.getElementById("changeProviderBtn").style.display = "block";
+            });
+
+            // Event listener for the "Change Provider" button
+            document.getElementById("changeProviderBtn").addEventListener("click", function() {
+                document.getElementById("provider_select").style.display = "block";
+                document.getElementById("changeProviderBtn").style.display = "none";
+            });
+
+            // Event listener for form submission
+            document.getElementById("id_form").addEventListener("submit", function(event) {
+                // Prevent the default form submission
+                event.preventDefault();
+
+                // Get the values from the form fields
+                const guestName = document.getElementById("id_Guestname").value.trim();
+                const alias = document.getElementById("id_alias").value.trim();
+                const providerName = document.getElementById("id_name").value.trim();
+
+                // If a guest name is provided, open a new window for the guest workflow in conference2.html
+                if (guestName !== "") {
+                    // Replace provider name with guest name for the guest workflow
+                    const guestUrl = `conference2.html?Guestname=${encodeURIComponent(guestName)}&alias=${encodeURIComponent(alias)}&name=${encodeURIComponent(guestName)}`;
+
+                    // Open a new window with the constructed URL
+                    window.open(guestUrl, '_blank', 'width=900,height=1080'); // Specify window options as needed
+                }
+
+                // Submit the form normally for the provider workflow in the current window
+                this.submit();
+            });
+        };
+    </script>
+</body>
+</html>
